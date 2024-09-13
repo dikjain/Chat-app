@@ -2,7 +2,7 @@ import express from 'express';
 import { Server } from 'socket.io';
 import {createServer} from 'http'
 import cors from 'cors';
-import { log } from 'console';
+import path from 'path';
 
 
 const port =3000
@@ -17,6 +17,15 @@ const io = new Server(server,{cors:{
     credentials:true
 }
 });
+
+const __dirname = path.resolve()
+
+
+app.use(express.static(path.join(__dirname, 'dist')))
+app.get('*',(req,res)=>{
+    res.sendFile(path.resolve(__dirname,'dist','index.html'));
+});
+
 app.use(cors({
     origin: "*",
     methods:["GET","POST"],
@@ -36,9 +45,6 @@ io.on("connection",(socket)=>{
     
 })
 
-app.get('/',(req,res)=>{
-    res.send('Hello World');
-});
 
 
 server.listen(port,()=>{
